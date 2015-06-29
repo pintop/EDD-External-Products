@@ -12,6 +12,7 @@ Author URI: http://webdevstudios.com
  * External Product URL Field
  *
  * Adds field do the EDD Downloads meta box for specifying the "External Product URL"
+ * and the text for the purchase button.
  *
  * @since 1.0.0
  * @param integer $post_id Download (Post) ID
@@ -44,7 +45,7 @@ add_action( 'edd_meta_box_fields', 'edd_external_product_render_field', 90 );
  */
 function edd_external_product_save( $fields ) {
 
-	// Add our field
+	// Add our fields
 	$fields[] = '_edd_external_url';
 	$fields[] = '_edd_external_button_text';
 
@@ -101,9 +102,11 @@ function edd_external_product_link( $purchase_form, $args ) {
 	// If the product has an external URL set
 	if ( $external_url = get_post_meta( $args['download_id'], '_edd_external_url', true ) ) {
 
+		//If the product does not have button text set
 		if (!$button_text = get_post_meta( $args['download_id'], '_edd_external_button_text', true ) ){
 			$button_text = $args['text'];
 		}
+
 		// Open up the standard containers
 		$output = '<div class="edd_download_purchase_form">';
 		$output .= '<div class="edd_purchase_submit_wrapper">';
