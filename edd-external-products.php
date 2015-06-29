@@ -18,11 +18,17 @@ Author URI: http://webdevstudios.com
  */
 function edd_external_product_render_field( $post_id ) {
 	$edd_external_url = get_post_meta( $post_id, '_edd_external_url', true );
+	$edd_external_button_text = get_post_meta( $post_id, '_edd_external_button_text', true );
 ?>
 	<p><strong><?php _e( 'External Product URL:', 'edd-external-product' ); ?></strong></p>
 	<label for="edd_external_url">
 		<input type="text" name="_edd_external_url" id="edd_external_url" value="<?php echo esc_attr( $edd_external_url ); ?>" size="80" placeholder="http://"/>
 		<br/><?php _e( 'The external URL (including http://) to use for the purchase button. Leave blank for standard products.', 'edd-external-product' ); ?>
+	</label>
+	<p><strong><?php _e( 'External Product Button Text:', 'edd-external-product' ); ?></strong></p>
+	<label for="edd_external_button_text">
+		<input type="text" name="_edd_external_button_text" id="edd_external_button_text" value="<?php echo esc_attr( $edd_external_button_text ); ?>" size="40" />
+		<br/><?php _e( 'The text to use for the purchase button. Leave blank for default text.', 'edd_external_button_text' ); ?>
 	</label>
 <?php
 }
@@ -40,6 +46,7 @@ function edd_external_product_save( $fields ) {
 
 	// Add our field
 	$fields[] = '_edd_external_url';
+	$fields[] = '_edd_external_button_text';
 
 	// Return the fields array
 	return $fields;
@@ -94,6 +101,9 @@ function edd_external_product_link( $purchase_form, $args ) {
 	// If the product has an external URL set
 	if ( $external_url = get_post_meta( $args['download_id'], '_edd_external_url', true ) ) {
 
+		if (!$button_text = get_post_meta( $args['download_id'], '_edd_external_button_text', true ) ){
+			$button_text = $args['text'];
+		}
 		// Open up the standard containers
 		$output = '<div class="edd_download_purchase_form">';
 		$output .= '<div class="edd_purchase_submit_wrapper">';
@@ -104,7 +114,7 @@ function edd_external_product_link( $purchase_form, $args ) {
 			implode( ' ', array( $args['style'], $args['color'], trim( $args['class'] ) ) ),
 			esc_attr( $external_url ),
 			apply_filters( 'edd_external_product_link_attrs', '', $args ),
-			esc_attr( $args['text'] )
+			esc_attr( $button_text )
 		);
 
 		// Close the containers
